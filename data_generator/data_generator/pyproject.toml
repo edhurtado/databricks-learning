@@ -1,0 +1,22 @@
+[project]
+name = "data-generator"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Edgar Hurtado",email = "edhurtado@utp.edu.co"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+"faker",
+"pandas",
+"openpyxl"
+]
+
+[tool.poetry]
+packages = [{include = "data_generator", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
