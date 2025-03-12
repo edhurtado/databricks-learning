@@ -1,0 +1,8 @@
+data_generator/*
+data_generator
+*.csv
+*.json
+*.parquet
+*.xlsx
+*.orc
+.python-version
