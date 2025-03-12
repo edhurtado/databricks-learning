@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  zookeeper:
+  zookeeper: # Zookeeper is required to install/use Kafka
     image: confluentinc/cp-zookeeper:7.3.0
     container_name: zookeeper
     environment:
@@ -67,7 +67,7 @@ services:
     volumes:
       - kafka-data:/var/lib/kafka/data
 
-  kafka-ui:
+  kafka-ui: # We can create an UI for Kafka services
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
     depends_on:

@@ -89,9 +89,10 @@ def export_to_excel(data, nombre_archivo="data.xlsx"):
     df = create_data_df(data)
     df.to_excel(nombre_archivo, index=False)
 
-fake_data = generate_fake_data(100)
-export_to_csv(fake_data)
-export_to_json(fake_data)
-export_to_excel(fake_data)
-export_to_orc(fake_data)
-export_to_parquet(fake_data)
+if __name__ == "__main__": # Main class
+    fake_data = generate_fake_data(100)
+    export_to_csv(fake_data)
+    export_to_json(fake_data)
+    export_to_excel(fake_data)
+    export_to_orc(fake_data)
+    export_to_parquet(fake_data)
