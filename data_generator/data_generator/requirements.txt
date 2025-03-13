@@ -1,0 +1,6 @@
+pyarrow==19.0.1
+pandas==2.2.3
+faker==37.0.0
+openpyxl==3.1.5
+kafka-python==2.0.6
+fastparquet==2024.11.0

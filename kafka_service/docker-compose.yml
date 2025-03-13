@@ -23,11 +23,19 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - "9093:9093"
+      - "9092:9092"
       - "29092:29092"
     expose:
-      - "9093"
+      - "9092"
       - "29092"
+    command: # It's better (for me) to create a default topic in order to make things faster
+      - /bin/bash
+      - -c
+      - |
+        # Create default Topic
+        kafka-topics --create --topic default_topic1 --bootstrap-server kafka:9093 --partitions 1 --replication-factor 1
+        # Start Kafka after topic creation
+        /etc/confluent/docker/run
     environment:
       # From Docker Hub
       #KAFKA_NODE_ID: 1
@@ -44,15 +52,6 @@ services:
       #KAFKA_NUM_PARTITIONS: 3
       #KAFKA_LISTENERS: PLAINTEXT://localhost:9092,CONTROLLER://localhost:9093
 
-      # Claude - Helper
-      #KAFKA_BROKER_ID: 1
-      #KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      #KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-      #KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER:PLAINTEXT
-      #KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      #KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      #KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-
       # Final
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -63,9 +62,32 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "kafka:9092"]
+      interval: 30s
+      timeout: 20s
+      retries: 2
+      start_period: 20s
 
     volumes:
       - kafka-data:/var/lib/kafka/data
+
+  kafka-topic-setup:
+    image: confluentinc/cp-kafka:7.3.0
+    container_name: kafka-topics-setup
+    depends_on:
+      kafka:
+        condition: service_healthy
+    command: >
+      bash -c "
+        echo -e 'Creando topics...'
+        kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 --partitions 3 --replication-factor 1 --topic eventos-usuario
+        kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 --partitions 3 --replication-factor 1 --topic default_topic
+        kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 --partitions 3 --replication-factor 1 --topic transacciones
+        kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 --partitions 2 --replication-factor 1 --topic notificaciones
+        echo -e 'Topics creados!'
+        kafka-topics --list --bootstrap-server kafka:9092
+      "
 
   kafka-ui: # We can create an UI for Kafka services
     image: provectuslabs/kafka-ui:latest
