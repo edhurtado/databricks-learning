@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   zookeeper: # Zookeeper is required to install/use Kafka
     image: confluentinc/cp-zookeeper:7.3.0
