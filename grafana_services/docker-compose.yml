@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_iot
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    ports:
+      - "3000:3000"
+    expose:
+      - 3000
+    networks:
+      - iot_network
+
+networks:
+  iot_network:
+    driver: bridge

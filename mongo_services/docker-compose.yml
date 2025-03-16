@@ -26,6 +26,10 @@ services:
       ME_CONFIG_MONGODB_PORT: 27017
       ME_CONFIG_MONGODB_SERVER: mongodb_iot
 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: mydatabase   # Esto crea la base de datos automáticamente al iniciar el contenedor
+
       ME_CONFIG_BASICAUTH_USERNAME: admin
       ME_CONFIG_BASICAUTH_PASSWORD: admin
     depends_on:

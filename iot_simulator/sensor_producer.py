@@ -33,7 +33,10 @@ def continuos_data_send():
             print(f"Temperature sent: {message}")
             time.sleep(0.5)
     except KeyboardInterrupt:
-        print("Consumer interrupted.")
+        print("Producer interrupted.")
     finally:
         producer.close()
-        print("Closed consumer")
+        print("Closed producer")
+
+if __name__ == "__main__":
+    continuos_data_send()

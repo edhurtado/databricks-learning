@@ -71,6 +71,7 @@ services:
     command: >
       bash -c "
         echo -e 'Creando topics...'
+        kafka-topics --create --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 --topic sensor_topic --config retention.ms=300000
         kafka-topics --create --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 --topic eventos-usuario --config retention.ms=300000
         kafka-topics --create --bootstrap-server kafka:9092 --partitions 2 --replication-factor 1 --topic default_topic --config retention.ms=300000
         kafka-topics --create --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 --topic transacciones --config retention.ms=300000
