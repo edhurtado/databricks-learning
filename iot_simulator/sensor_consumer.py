@@ -1,6 +1,8 @@
 from kafka import KafkaConsumer
 import json
 from pymongo import MongoClient
+import time
+from prometheus_client import CollectorRegistry, Gauge, push_to_gateway
 
 KAFKA_BROKER = "localhost:29092"
 TOPIC = "sensor_topic"
@@ -26,6 +28,14 @@ client = MongoClient(mongo_url)
 db = client.mydatabase
 collection = db.events  # Puedes crear tu colección o utilizar una existente
 
+# Configuring Prometheus metrics ()
+registry = CollectorRegistry()
+temperature_gauge = Gauge('iot_temperature', 'Temperature IOT sensor', registry=registry)
+humidity_gauge = Gauge('iot_humidity', 'Humidity IOT sensor', registry=registry)
+
+def send_metrics_to_pushgateway():
+    push_to_gateway('localhost:9091', job='kafka_consumer', registry=registry)  # Envíalo a PushGateway
+
 for message in consumer:
     try:
         if isinstance(message.value, bytes):
@@ -34,6 +44,18 @@ for message in consumer:
             data = message.value
         collection.insert_one(data)
         print(f"Inserted data {data}")
+        
+        print(f"Sending data to Grafana")
+        temperature = data.get("temperature")
+        humidity = data.get("humidity")
+        
+        if temperature is not None:
+            temperature_gauge.set(temperature)
+        if humidity is not None:
+            humidity_gauge.set(humidity)
+            
+        send_metrics_to_pushgateway()
+
     except KeyboardInterrupt:
         print("Consumer interrupted.")
         consumer.close()
@@ -41,4 +63,4 @@ for message in consumer:
     except Exception as e:
         print(f"Error: {e}")
     #finally:
-        
+    
