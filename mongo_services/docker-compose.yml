@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  mongodb_iot:
+    image: mongodb/mongodb-community-server:6.0-ubi8
+    container_name: mongo_iot
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - "27017:27017"
+    expose:
+      - 27017
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - iot_network
+  
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo_express
+    environment:
+      ME_CONFIG_MONGODB_URL: "mongodb://root:rootpassword@mongodb_iot:27017/"
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: rootpassword
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_SERVER: mongodb_iot
+
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+    depends_on:
+      - mongodb_iot
+    ports:
+      - "8081:8081"
+    networks:
+      - iot_network
+
+networks:
+  iot_network:
+    driver: bridge
+    name: iot_network
+
+volumes:
+  mongo-data:
+
