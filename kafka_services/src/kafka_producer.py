@@ -4,6 +4,8 @@ import json
 import pyarrow.parquet as pq
 import pyorc
 
+MAX_TOPIC_MESSAGES = 10
+
 # Default producer
 producer = KafkaProducer(
     bootstrap_servers='localhost:29092',  # Cambia esto según tu configuración de Docker
@@ -85,13 +87,13 @@ def send_file_to_kafka(file_path: str, limit: int=10):
 
 if __name__ == "__main__":
     file_path= r"C:\\Users\\User\\Documents\\repos\\Previous\\data.csv"
-    send_file_to_kafka(file_path, 10)
+    send_file_to_kafka(file_path, MAX_TOPIC_MESSAGES)
 
     file_path= r"C:\\Users\\User\\Documents\\repos\\Previous\\data.json"
-    send_file_to_kafka(file_path, 10)
+    send_file_to_kafka(file_path, MAX_TOPIC_MESSAGES)
     
     file_path= r"C:\\Users\\User\\Documents\\repos\\Previous\\data.orc"
-    send_file_to_kafka(file_path, 10)
+    send_file_to_kafka(file_path, MAX_TOPIC_MESSAGES)
     
     file_path= r"C:\\Users\\User\\Documents\\repos\\Previous\\data.parquet"
-    send_file_to_kafka(file_path, 10)
+    send_file_to_kafka(file_path, MAX_TOPIC_MESSAGES)
